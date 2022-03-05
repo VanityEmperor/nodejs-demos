@@ -1,5 +1,9 @@
-console.log(1)
-console.log(2)
-console.log(3)
-console.log(4)
-console.log(5)
+const http = require('http')
+const server = http.createServer((req,res)=>{
+    res.writeHead(200,{'content-type':'text/html'})
+    res.end('<h1>hello world</h1>')
+})
+
+server.listen(3000,()=>{
+    console.log('listening on 3000 port')
+})
