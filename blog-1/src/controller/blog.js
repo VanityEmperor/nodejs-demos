@@ -15,22 +15,28 @@ const getList = (author,keyword)=>{
 
 
 const getDatail = (id)=>{
-    // 先返回假数据
-    return {
-        id:1,
-        title:'标题A',
-        content:'内容A',
-        createTime:1646833060625,
-        author:'zhangsan'
-    }
+    const sql = `select * from blogs where id='${id}'`
+    return exec(sql).then( rows =>{
+        return rows[0]
+    })
 }
 
 const newBlog = (blogData = {}) =>{
     // blogData 是一个博客对象，包含 title content 属性
-    console.log('newBlog data'+blogData)
-    return{
-        id: 3 //表示新建博客，插入到数据表里面的id
-    }
+    const title = blogData.title
+    const content = blogData.content
+    const author = blogData.author
+    const createtime = Date.now()
+    const sql = `
+        insert into blogs (title,content,createtime,author)
+        values ('${title}','${content}',${createtime},'${author}');
+    `
+    return exec(sql).then(insertData =>{
+        console.log(insertData)
+        return {
+            id:insertData.insertId
+        }
+    })
 }
 
 const updateBlog = (id,blogData = {}) =>{

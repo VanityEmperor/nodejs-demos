@@ -18,15 +18,23 @@ const handleBlogRouter = (req,res)=>{
 
     // 获取博客详情
     if(method === 'GET' && req.path === '/api/blog/detail'){
-
-        const data = getDatail(id)
-        return new SuccessModel(data)
+        // const data = getDatail(id)
+        // return new SuccessModel(data)
+        const result = getDatail(id)
+        return result.then(data =>{
+            return new SuccessModel(data)
+        })
     }
 
     // 新建一篇博客
     if(method === 'POST' && req.path === '/api/blog/new'){
-        const data = newBlog(req.body)
-        return new SuccessModel(data)
+        // const data = newBlog(req.body)
+        // return new SuccessModel(data)
+        req.body.author = 'zhangsan' // 假数据，待开放登录时。再改成真实数据
+        const result = newBlog(req.body)
+        return result.then(data =>{
+            return new SuccessModel(data)
+        })
     }
 
     // 更新一篇博客
