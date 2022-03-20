@@ -1,5 +1,14 @@
 const {getList,getDatail,newBlog,updateBlog,delBlog} = require('../controller/blog')
 const {SuccessModel,ErrorModel} = require('../model/resModel')
+
+// 统一的登录验证函数
+const loginCheck = (req) =>{
+    if(!req.session.username){
+        return Promise.resolve(new ErrorModel('尚未登录'))
+    }
+
+}
+
 const handleBlogRouter = (req,res)=>{
     const method = req.method // GET POST
     const id = req.query.id
@@ -28,9 +37,14 @@ const handleBlogRouter = (req,res)=>{
 
     // 新建一篇博客
     if(method === 'POST' && req.path === '/api/blog/new'){
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            return loginCheck
+        }
+
         // const data = newBlog(req.body)
         // return new SuccessModel(data)
-        req.body.author = 'zhangsan' // 假数据，待开放登录时。再改成真实数据
+        req.body.author = req.session.username // 假数据，待开放登录时。再改成真实数据
         const result = newBlog(req.body)
         return result.then(data =>{
             return new SuccessModel(data)
@@ -39,6 +53,10 @@ const handleBlogRouter = (req,res)=>{
 
     // 更新一篇博客
     if(method === 'POST' && req.path === '/api/blog/update'){
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            return loginCheck
+        }
         // const result = updateBlog(id,req.body)
         // if(result){
         //     return new SuccessModel()
@@ -58,13 +76,17 @@ const handleBlogRouter = (req,res)=>{
 
     // 删除一篇博客
     if(method === 'POST' && req.path === '/api/blog/del'){
+        const loginCheckResult = loginCheck(req)
+        if (loginCheckResult) {
+            return loginCheck
+        }
         // const result = delBlog(id)
         // if(result){
         //     return new SuccessModel()
         // } else {
         //     return new ErrorModel('删除博客失败')
         // }
-        const author = 'zhangsan' // 假数据，待开放登录时。再改成真实数据
+        const author = req.session.username // 假数据，待开放登录时。再改成真实数据
         const result = delBlog(id,author)
         return result.then(val =>{
             if(val){
