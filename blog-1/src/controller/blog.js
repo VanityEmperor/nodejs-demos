@@ -1,3 +1,4 @@
+const xss = require('xss')
 const { exec } = require('../db/mysql')
 const getList = (author,keyword)=>{
     let sql = `select * from blogs where 1=1 `
@@ -43,7 +44,10 @@ const updateBlog = (id,blogData = {}) =>{
     // id就是更新博客的id
     // blogData 是一个博客对象，包含 title content 属性
 
-    const title = blogData.title
+    // &lt;script&gt;alert(document.cookie)&lt;/script&gt;
+    // <script>alert(document.cookie)</script>
+    const title = xss(blogData.title)
+    console.log('title',title)
     const content = blogData.content
 
     const sql = `
